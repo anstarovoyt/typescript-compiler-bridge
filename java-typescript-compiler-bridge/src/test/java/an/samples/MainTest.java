@@ -1,6 +1,7 @@
 package an.samples;
 
 
+import an.samples.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +27,9 @@ public class MainTest {
         try {
             return url.toURI();
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            Util.throwRuntime(e);
         }
+
+        return null;
     }
 }
