@@ -1,5 +1,6 @@
-package an.samples.bridge;
+package an.samples.bridge.tsc;
 
+import an.samples.bridge.TypeScriptCompiler;
 import an.samples.utils.Util;
 import com.google.common.base.Strings;
 import com.google.common.io.CharStreams;
