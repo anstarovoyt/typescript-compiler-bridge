@@ -49,4 +49,5 @@ public class TypeScriptTscCompiler implements TypeScriptCompiler {
 	private String toString(InputStream stream) throws IOException {
 		return CharStreams.toString(new InputStreamReader(stream));
 	}
+
 }

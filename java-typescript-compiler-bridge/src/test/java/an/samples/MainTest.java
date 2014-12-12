@@ -10,15 +10,13 @@ import org.junit.*;
 import org.junit.rules.TestName;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class MainTest {
 	private static final String DEFAULT_FILE = "ts-files/core.ts";
 	private static final String DEFAULT_FILE_JS = "ts-files/core.js";
+	private static final String DEFAULT_FOLDER = "ts-files";
 
 	@Rule
 	public TestName myName = new TestName();
@@ -48,30 +46,13 @@ public class MainTest {
 		TimeLogger timeLogger = new TimeLogger();
 		assertFileExists(DEFAULT_FILE);
 
-		compiler.compile(getAbsoluteResourcePath(DEFAULT_FILE));
+		compiler.compile(Util.getAbsoluteResourcePath(DEFAULT_FILE));
 		assertFileExists(DEFAULT_FILE_JS);
 		timeLogger.log(myName.getMethodName());
 	}
 
-	private String getAbsoluteResourcePath(String path) {
-		return Paths.get(getFileUri(path)).toAbsolutePath().toString();
-	}
-
-	private URI getFileUri(String path) {
-		URL url = Main.class.getClassLoader().getResource(path);
-		Assert.assertNotNull(url);
-
-		try {
-			return url.toURI();
-		} catch (URISyntaxException e) {
-			Util.throwRuntime(e);
-		}
-
-		return null;
-	}
-
 	private void deleteCompiledFiles() throws IOException {
-		Files.newDirectoryStream(Paths.get(getFileUri("ts-files"))).forEach(path -> {
+		Files.newDirectoryStream(Paths.get(Util.getFileUri("ts-files"))).forEach(path -> {
 			String fileName = path.getFileName().toString();
 			if (!fileName.endsWith(".js") && !fileName.endsWith(".js.map")) {
 				return;
@@ -86,6 +67,6 @@ public class MainTest {
 	}
 
 	private void assertFileExists(String path) {
-		Assert.assertTrue(Files.exists(Paths.get(getFileUri(path))));
+		Assert.assertTrue(Files.exists(Paths.get(Util.getFileUri(path))));
 	}
 }
