@@ -29,10 +29,11 @@ public final class Util {
         return null;
     }
 
-    @SuppressWarnings("javascript")
+    @SuppressWarnings("unused")
     public static String readFileText(String path) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(path))) {
-            return CharStreams.toString(bufferedReader);
+            String readValue = CharStreams.toString(bufferedReader);
+            return readValue;
         } catch (IOException e) {
             throwRuntime(e);
         }
@@ -40,7 +41,7 @@ public final class Util {
         return null;
     }
 
-    @SuppressWarnings("javascript")
+    @SuppressWarnings("unused")
     public static void writeFile(String path, String content) {
         try {
             Files.write(Paths.get(path), content.getBytes());
@@ -49,7 +50,7 @@ public final class Util {
         }
     }
 
-    @SuppressWarnings("javascript")
+    @SuppressWarnings("unused")
     public static void log(String text) {
         System.out.println(text);
     }

@@ -12,7 +12,11 @@ import java.util.List;
 
 public class TypeScriptServiceCompiler implements TypeScriptCompiler {
 
+    public static final String COMPILE_STRING = "ts1.compileFile(%s, %s)";
+    public static final String RECOMPILE_STRING = "ts1.recompileFile(%s, %s)";
     private final ScriptEngine myEngine;
+    private final Object lock = new Object();
+    private boolean isFirst = true;
 
     public TypeScriptServiceCompiler() {
         ScriptEngineManager engineManager = new ScriptEngineManager();
@@ -30,13 +34,15 @@ public class TypeScriptServiceCompiler implements TypeScriptCompiler {
 
     @Override
     public List<String> compile(String filePath) {
-        try {
-            myEngine.eval(String.format("ts1.compileFile(%s, %s)", wrapWithQuotes(filePath), wrapWithQuotes(Util.getAbsoluteResourcePath("ts1.3"))));
+        synchronized (lock) {
+            try {
+                myEngine.eval(String.format(isFirst ? COMPILE_STRING : RECOMPILE_STRING, wrapWithQuotes(filePath), wrapWithQuotes(Util.getAbsoluteResourcePath("ts1.3"))));
+                if (isFirst) isFirst = false;
 
-        } catch (ScriptException e) {
-            Util.throwRuntime(e);
+            } catch (ScriptException e) {
+                Util.throwRuntime(e);
+            }
         }
-
         return null;
     }
 
