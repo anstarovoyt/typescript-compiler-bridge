@@ -2,6 +2,7 @@ package an.samples;
 
 
 import an.samples.bridge.TypeScriptCompiler;
+import an.samples.bridge.externalService.TypeScriptExternalCompiler;
 import an.samples.bridge.service.TypeScriptServiceCompiler;
 import an.samples.bridge.tsc.TypeScriptTscCompiler;
 import an.samples.utils.TimeLogger;
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Random;
 
 import static an.samples.utils.Util.getAbsoluteResourcePath;
+import static an.samples.utils.Util.log;
 import static an.samples.utils.Util.readFileText;
 
 public class MainTest {
@@ -61,7 +63,14 @@ public class MainTest {
         testRecompileSeveralTry(compiler);
     }
 
+    @Test
+    public void testJExternalReCompiler() throws InterruptedException {
+        TypeScriptExternalCompiler compiler = new TypeScriptExternalCompiler();
+        testRecompileSeveralTry(compiler);
+    }
+
     private void testRecompileSeveralTry(TypeScriptCompiler compiler) {
+        TimeLogger timeLogger = new TimeLogger();
         testCompiler(compiler);
         String moduleName = addSimpleModuleToEndOfFile(DEFAULT_FILE);
         testCompiler(compiler);
@@ -90,6 +99,7 @@ public class MainTest {
         moduleName = addSimpleModuleToEndOfFile(DEFAULT_FILE);
         testCompiler(compiler);
         Assert.assertTrue(readFileText(getAbsoluteResourcePath(DEFAULT_FILE_JS)).contains(moduleName));
+        timeLogger.log(myName.getMethodName() + ", total time");
     }
 
     private void testCompiler(TypeScriptCompiler compiler) {

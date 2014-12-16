@@ -101,7 +101,7 @@ module ts1 {
                 utils.log("read file " + filename);
             }
             catch (e) {
-                utils.log("error while read");
+                utils.log("error while read " + e);
                 if (onError) {
                     onError(e.message);
                 }
