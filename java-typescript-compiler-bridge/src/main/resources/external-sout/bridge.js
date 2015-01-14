@@ -70,15 +70,11 @@ function initStdin() {
 }
 
 var compilerWrapper = require('./ts-compiler-host-impl');
-
 var params = parseParams();
-
 var servicePath = params.servicePath;
 var sessionId = params.sessionId;
-initStdin();
-
 compilerWrapper.initCompiler(servicePath, sessionId);
-
+initStdin();
 
 
 
