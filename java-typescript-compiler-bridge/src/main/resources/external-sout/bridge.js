@@ -15,11 +15,9 @@ function parseParams() {
 }
 
 function processCommand(currentCommand, inputBuffer) {
-    if (currentCommand == 'compile') {
+    if ('compile' == currentCommand) {
         var files = inputBuffer.trim().split('\n');
-        console.log("compile start '" + inputBuffer + "'");
         compilerWrapper.compileFile(files);
-        console.log('compile end');
     }
 }
 function initStdin() {
@@ -46,7 +44,6 @@ function initStdin() {
                 var possibleCommand = chunk.split(' ')[1];
                 if (possibleCommand) {
                     currentCommand = possibleCommand.trim();
-                    console.log('state -> ' + currentCommand);
                 }
             }
             return;
@@ -54,11 +51,9 @@ function initStdin() {
 
         if (!isSystemCommand(chunk)) {
             inputBuffer += chunk;
-            console.log('read chunk -> ' + inputBuffer);
             return;
         }
 
-        console.log('end command -> ' + currentCommand);
         validateCompilerState(chunk);
         processCommand(currentCommand, inputBuffer);
 
