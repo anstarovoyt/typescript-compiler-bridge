@@ -20,6 +20,10 @@ function processCommand(currentCommand, inputBuffer) {
         compilerWrapper.compileFile(files);
     }
 }
+
+function fireCommand(command) {
+    process.stdout.write(command + '\n');
+}
 function initStdin() {
     process.stdin.setEncoding('utf8');
 
@@ -70,6 +74,10 @@ var servicePath = params.servicePath;
 var sessionId = params.sessionId;
 compilerWrapper.initCompiler(servicePath, sessionId);
 initStdin();
+fireCommand('ready');
+
+
+
 
 
 
