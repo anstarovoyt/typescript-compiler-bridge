@@ -1,3 +1,5 @@
+var logDebugData = false;
+
 function parseParams() {
     var result = {};
     var args = process.argv.slice(2);
@@ -18,12 +20,18 @@ function processCommand(currentCommand, inputBuffer) {
     if ('compile' == currentCommand) {
         var files = inputBuffer.trim().split('\n');
         compilerWrapper.compileFile(files);
+        fireCommand('end')
     }
 }
 
 function fireCommand(command) {
-    process.stdout.write(command + '\n');
+    process.stdout.write(sessionId + ' ' + command + '\n');
 }
+
+function loDataIfEnabled(value) {
+    if (logDebugData) console.error(value.trim());
+}
+
 function initStdin() {
     process.stdin.setEncoding('utf8');
 
@@ -43,29 +51,51 @@ function initStdin() {
         var chunk = process.stdin.read();
         if (chunk == null) return;
 
+        loDataIfEnabled('"' + chunk + '"');
+
+        processChunk(chunk);
+    });
+
+    var actualChunk = '';
+    function processChunk(chunk) {
+        if (chunk.substring(chunk.length - 1) === '\n') {
+            //terminal symbol
+            var processedChunk = actualChunk + chunk;
+            actualChunk = '';
+
+            processedChunk.split('\n').forEach(processLine);
+
+        } else {
+            //just waiting terminal
+            actualChunk += chunk;
+        }
+    }
+
+    function processLine(line) {
         if (currentCommand == null) {
-            if (isSystemCommand(chunk)) {
-                var possibleCommand = chunk.split(' ')[1];
+            if (isSystemCommand(line)) {
+                var possibleCommand = line.split(' ')[1];
                 if (possibleCommand) {
                     currentCommand = possibleCommand.trim();
+                    loDataIfEnabled('going to state ' + currentCommand);
                 }
             }
             return;
         }
 
-        if (!isSystemCommand(chunk)) {
-            inputBuffer += chunk;
+        if (!isSystemCommand(line)) {
+            loDataIfEnabled('aggregate data: ' + line);
+            inputBuffer += line + '\n';
             return;
         }
 
-        validateCompilerState(chunk);
+        loDataIfEnabled('going to end state ' + currentCommand);
+        validateCompilerState(line);
         processCommand(currentCommand, inputBuffer);
 
         currentCommand = null;
         inputBuffer = '';
-    });
-
-
+    }
 }
 
 var compilerWrapper = require('./ts-compiler-host-impl');
